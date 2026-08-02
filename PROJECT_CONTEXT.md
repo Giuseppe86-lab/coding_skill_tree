@@ -57,6 +57,40 @@ Il percorso dura circa un anno e deve produrre:
 - Bisogno di distinguere meglio tra controllo di presenza (`key in dict`) e
   recupero di valore (`dict.get(key)`).
 
+## Evidenze storiche precedenti all'avvio del progetto
+
+Baseline ricostruita il 2026-08-02 dai notebook conservati nel repository
+`EsercitazioniCoding`:
+
+- `codesignal_bcgx_practice_giuseppe.ipynb`: 16 esercizi su Python, strutture
+  dati, data manipulation, stringhe, metriche ML e moving average. I test
+  visibili risultano superati, ma diverse funzioni sono state ridefinite in
+  celle successive con correzioni o versioni AI. Il notebook documenta quindi
+  pratica svolta e apprendimento, non mastery autonoma di tutti i pattern.
+- `codesignal_bcgx_simulazione_70min.ipynb`: quattro esercizi completati con
+  test visibili superati su aggregazione, duplicati tramite set, join tramite
+  lookup e trasformazione long-to-wide. I tempi reali non sono compilati, per
+  cui correttezza e gestione del tempo non possono ancora essere valutate
+  insieme.
+- `Esercizi_rifare.ipynb`: ripetizione riuscita di primo duplicato, pair sum e
+  long-to-wide. Il join e' passato da una prima versione con ciclo annidato a
+  una versione con lookup, evidenziando consolidamento del pattern.
+- `codesignal_patterns_reinforcement.ipynb`: contiene quattro esercizi ancora
+  non svolti su conteggio di cifre, enumerazione completa, simulazione su
+  griglia e query con frequency map.
+
+Le evidenze confermano come punti forti lookup, set, aggregazione e
+trasformazioni tabellari. Le prossime quest devono verificare soprattutto:
+
+- riconoscimento autonomo del pattern prima dell'implementazione;
+- generalizzazione senza hardcodare categorie o metriche;
+- non mutazione degli input;
+- uso di lookup e frequenze per evitare cicli annidati;
+- manipolazione robusta delle stringhe e degli spazi;
+- ottimizzazione di finestre mobili e query ripetute;
+- simulazioni su matrice e gestione di problemi multi-step;
+- registrazione obbligatoria del tempo reale per ogni esercizio.
+
 ## Pattern gia' acquisiti
 
 - Hash map.
