@@ -56,10 +56,7 @@ coding_skill_tree/
 +-- weekly/
 |   +-- week_001/
 |   |   +-- README.md
-|   |   +-- exercise_1.py
-|   |   +-- exercise_2.py
-|   |   +-- exercise_3.py
-|   |   +-- exercise_4.py
+|   |   +-- quest.ipynb
 |   |   +-- notes.md
 |   |   +-- review.md
 |   +-- week_002/
@@ -79,7 +76,7 @@ Ogni settimana e' una quest.
 
 Una settimana standard contiene:
 
-- 4 esercizi Python progressivi;
+- un singolo notebook con 4 esercizi Python progressivi;
 - almeno 1 pattern nuovo o appena imparato;
 - almeno 1 esercizio di consolidamento su pattern gia' visti;
 - timebox consigliato per ogni esercizio;

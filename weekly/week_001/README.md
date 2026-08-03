@@ -5,6 +5,10 @@ Periodo: 2026-08-03 — 2026-08-07
 Questa prima quest misura quanto i pattern gia' incontrati sono disponibili in
 autonomia e introduce una sliding window su un caso backend realistico.
 
+Tutti gli esercizi, gli esempi e i test visibili sono raccolti in
+`quest.ipynb`. Usa `notes.md` per registrare tempi e ragionamento senza
+appesantire il flusso del notebook.
+
 ## Regole
 
 - Prima di iniziare, leggi tutti e quattro gli esercizi.
@@ -42,4 +46,3 @@ La review del venerdi' valutera':
 - qualita' dei test manuali aggiunti.
 
 Un singolo esercizio corretto non assegna mastery a un pattern.
-

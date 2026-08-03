@@ -32,6 +32,7 @@ strengths, weaknesses, solved patterns and recurring mistakes.
 Each weekly quest should contain:
 
 - 4 progressive Python exercises;
+- all 4 exercises in a single Jupyter notebook;
 - realistic coding-assessment style problems;
 - at least 1 recently learned or new pattern;
 - recommended time for each exercise;
@@ -118,5 +119,7 @@ Reinforce these rules:
 - Keep durable context in Markdown files.
 - Do not rely on previous chat history being available.
 - Do not overwrite Giuseppe's submitted solutions.
+- Keep each weekly quest in one notebook to make the training flow easy to
+  follow.
 - Keep exercises and reviews in their corresponding weekly folder.
 - Use clear commit messages.
