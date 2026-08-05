@@ -87,3 +87,11 @@ la review.
 - Continuare con un esercizio breve su frequency map, aumentando gradualmente
 la complessita' invece di ripetere il conteggio di coppie identico.
 
+## Dispensa progressiva
+
+La sliding window dell'esercizio 4 inaugura il primo capitolo della dispensa
+LaTeX. Il capitolo documenta perche' la scansione annidata, pur producendo gli
+output attesi, non e' conforme al vincolo di scala e introduce l'invariante
+della finestra mobile a due indici.
+
+Sorgente: `dispensa/chapters/week_001.tex`.

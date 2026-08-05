@@ -38,6 +38,10 @@ Il target non e' solo risolvere esercizi, ma imparare a:
 - `xp.md`: livello, XP, streak, pattern sbloccati e boss fight vinte.
 - `mistakes/mistakes.md`: errori ricorrenti e contromisure.
 - `weekly/`: cartelle settimanali con esercizi, soluzioni, note e review.
+- `dispensa/`: sorgenti della dispensa LaTeX progressiva sugli algoritmi
+  affrontati e sulle ottimizzazioni emerse in review.
+- `output/pdf/dispensa_algoritmi.pdf`: versione offline aggiornata della
+  dispensa.
 - `monthly/`: report mensili e boss fight.
 
 ## Struttura consigliata
@@ -53,6 +57,10 @@ coding_skill_tree/
 +-- xp.md
 +-- mistakes/
 |   +-- mistakes.md
++-- dispensa/
+|   +-- main.tex
+|   +-- chapters/
+|       +-- week_001.tex
 +-- weekly/
 |   +-- week_001/
 |   |   +-- README.md
@@ -82,6 +90,8 @@ Una settimana standard contiene:
 - timebox consigliato per ogni esercizio;
 - note sugli errori;
 - review finale;
+- aggiornamento della dispensa LaTeX quando emergono nuovi algoritmi o
+  implementazioni non conformi ai vincoli;
 - aggiornamento di XP, skill tree e lessons learned.
 
 ### Sequenza
@@ -92,7 +102,31 @@ Una settimana standard contiene:
 3. Risolvere gli esercizi uno alla volta, rispettando il timebox.
 4. Scrivere note brevi su ragionamento, blocchi e intuizioni.
 5. Fare review delle soluzioni.
-6. Aggiornare i file di progresso.
+6. Dopo la review, aggiungere alla dispensa gli algoritmi nuovi e i confronti
+   tra implementazioni inefficienti e corrette.
+7. Compilare e verificare visivamente il PDF offline.
+8. Aggiornare i file di progresso.
+
+## Dispensa progressiva
+
+La dispensa e' un unico manuale cumulativo, costruito settimana dopo settimana
+in `dispensa/`. Non sostituisce la review: trasforma gli errori piu' istruttivi
+in materiale di ripasso durevole.
+
+Ogni capitolo viene scritto soltanto dopo il completamento della quest e puo'
+contenere:
+
+- formulazione del problema e ipotesi;
+- approccio iniziale e diagnosi tecnica dell'inefficienza;
+- algoritmo efficiente, invariante e correttezza;
+- analisi di complessita' temporale e spaziale;
+- edge case e segnali utili per riconoscere il pattern;
+- riquadri cromatici distinti per implementazione non conforme e
+  implementazione corretta.
+
+Il registro deve essere professionale, rigoroso e vicino a quello di una
+dispensa universitaria, mantenendo pero' l'orientamento pratico ai coding
+assessment.
 
 ## Review
 

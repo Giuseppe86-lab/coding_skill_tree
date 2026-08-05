@@ -1,0 +1,12 @@
+# LaTeX build intermediates
+output/pdf/*.aux
+output/pdf/*.fdb_latexmk
+output/pdf/*.fls
+output/pdf/*.listing
+output/pdf/*.log
+output/pdf/*.out
+output/pdf/*.toc
+output/pdf/*.synctex.gz
+
+# Rendered pages used only for visual QA
+tmp/

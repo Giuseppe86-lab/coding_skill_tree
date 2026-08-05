@@ -1,0 +1,203 @@
+\documentclass[11pt,a4paper,openany]{book}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm,headheight=15pt]{geometry}
+\usepackage{needspace}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+\definecolor{Ink}{HTML}{172033}
+\definecolor{Slate}{HTML}{526075}
+\definecolor{Paper}{HTML}{F7F8FA}
+\definecolor{Accent}{HTML}{2457C5}
+\definecolor{Bad}{HTML}{A83232}
+\definecolor{BadBack}{HTML}{FFF2F1}
+\definecolor{Good}{HTML}{18724B}
+\definecolor{GoodBack}{HTML}{EFFAF4}
+\definecolor{Note}{HTML}{9A6700}
+\definecolor{NoteBack}{HTML}{FFF8DF}
+\definecolor{CodeBack}{HTML}{F3F5F8}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=Accent,
+  urlcolor=Accent,
+  pdftitle={Dispensa progressiva di algoritmi e complessità},
+  pdfauthor={Giuseppe Sinatra}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65em}
+\setlist[itemize]{topsep=0.25em,itemsep=0.2em}
+\setlist[enumerate]{topsep=0.25em,itemsep=0.2em}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\color{Ink}}
+  {\filleft\Large\color{Accent}\chaptername\ \thechapter}
+  {0.6ex}
+  {\titlerule[1.1pt]\vspace{1.2ex}\Huge}
+\titleformat{\section}
+  {\Large\bfseries\color{Ink}}{\thesection}{0.7em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{Ink}}{\thesubsection}{0.7em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{Slate}Coding Skill Tree}
+\fancyhead[R]{\small\color{Slate}Dispensa progressiva}
+\fancyfoot[C]{\small\color{Slate}\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\let\cleardoublepage\clearpage
+
+\lstdefinestyle{pythoncode}{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{Accent},
+  commentstyle=\itshape\color{Slate},
+  stringstyle=\color{Good},
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  breakatwhitespace=false,
+  tabsize=4,
+  numbers=left,
+  numberstyle=\scriptsize\color{Slate},
+  numbersep=8pt,
+  xleftmargin=1.2em
+}
+
+\newtcblisting{inefficientcode}[1]{
+  enhanced,
+  breakable,
+  listing only,
+  listing options={style=pythoncode},
+  title={#1},
+  colback=BadBack,
+  colframe=Bad,
+  coltitle=white,
+  fonttitle=\bfseries,
+  boxrule=0.9pt,
+  arc=2pt,
+  left=1mm,right=1mm,top=1mm,bottom=1mm
+}
+
+\newtcblisting{efficientcode}[1]{
+  enhanced,
+  breakable,
+  listing only,
+  listing options={style=pythoncode},
+  title={#1},
+  colback=GoodBack,
+  colframe=Good,
+  coltitle=white,
+  fonttitle=\bfseries,
+  boxrule=0.9pt,
+  arc=2pt,
+  left=1mm,right=1mm,top=1mm,bottom=1mm
+}
+
+\newtcolorbox{principlebox}[1]{
+  enhanced,
+  breakable,
+  title={#1},
+  colback=NoteBack,
+  colframe=Note,
+  coltitle=white,
+  fonttitle=\bfseries,
+  boxrule=0.9pt,
+  arc=2pt
+}
+
+\newtcolorbox{definitionbox}[1]{
+  enhanced,
+  breakable,
+  title={#1},
+  colback=Paper,
+  colframe=Accent,
+  coltitle=white,
+  fonttitle=\bfseries,
+  boxrule=0.9pt,
+  arc=2pt
+}
+
+\begin{document}
+
+\frontmatter
+\begin{titlepage}
+  \centering
+  \vspace*{2.2cm}
+  {\Large\color{Accent}\bfseries CODING SKILL TREE\par}
+  \vspace{1.5cm}
+  {\Huge\color{Ink}\bfseries Dispensa progressiva di algoritmi e complessità\par}
+  \vspace{0.7cm}
+  {\Large\color{Slate}Dalle implementazioni non conformi agli invarianti efficienti\par}
+  \vfill
+  \begin{tcolorbox}[
+    width=0.82\textwidth,
+    colback=Paper,
+    colframe=Accent,
+    boxrule=0.8pt,
+    arc=2pt
+  ]
+  \centering
+  Manuale cumulativo per il ripasso offline dei pattern algoritmici emersi
+  nelle quest settimanali e nelle relative review tecniche.
+  \end{tcolorbox}
+  \vfill
+  {\large Giuseppe Sinatra\par}
+  \vspace{0.3cm}
+  {\color{Slate}Edizione progressiva - aggiornata al 5 agosto 2026\par}
+\end{titlepage}
+
+\chapter*{Nota metodologica}
+\addcontentsline{toc}{chapter}{Nota metodologica}
+
+Questa dispensa non è una raccolta generale di algoritmi. Ogni capitolo nasce
+da un'evidenza osservabile: un pattern nuovo affrontato in assessment, una
+soluzione non corretta oppure un'implementazione corretta sugli esempi ma non
+conforme ai vincoli di scala.
+
+L'analisi segue una struttura costante: modello del problema, approccio
+iniziale, diagnosi, invariante dell'algoritmo efficiente, argomento di
+correttezza, complessità ed elementi utili al riconoscimento del pattern.
+I riquadri rossi conservano il valore diagnostico dell'implementazione
+iniziale; i riquadri verdi presentano la versione di riferimento validata in
+review.
+
+\begin{principlebox}{Regola di lettura}
+Il codice rosso non è necessariamente errato negli output. Può essere
+semanticamente corretto e, al tempo stesso, inaccettabile rispetto ai limiti
+computazionali del problema. La distinzione tra correttezza funzionale ed
+efficienza asintotica è parte integrante della valutazione algoritmica.
+\end{principlebox}
+
+\tableofcontents
+
+\mainmatter
+\input{dispensa/chapters/week_001}
+
+\backmatter
+\chapter*{Indice dei pattern}
+\addcontentsline{toc}{chapter}{Indice dei pattern}
+
+\begin{tabular}{@{}lll@{}}
+\toprule
+Pattern & Prima introduzione & Stato al capitolo \\
+\midrule
+Sliding window a due indici & Week 001 & Introdotto, da consolidare \\
+\bottomrule
+\end{tabular}
+
+\end{document}

@@ -101,11 +101,51 @@ After each completed weekly quest, update:
 - `mistakes/mistakes.md`
 - the week's `review.md`
 - XP and progress logs
+- the progressive LaTeX handbook in `dispensa/`, when the week introduced a
+  new algorithm or exposed an implementation that did not satisfy the stated
+  complexity constraints
 
 Never award mastery based on one successful exercise.
 
 A pattern is considered mastered only after it is solved independently,
 correctly and within the target time on multiple occasions.
+
+## Progressive LaTeX handbook
+
+The repository maintains a single cumulative, offline handbook built from
+`dispensa/main.tex`. Add the chapter for a week only after its solutions have
+been reviewed; the handbook must never reveal hints or solutions before the
+quest is complete.
+
+Create or update `dispensa/chapters/week_XXX.tex` when at least one of these
+conditions holds:
+
+- a new algorithm or reusable pattern was encountered in the assessment;
+- the submitted implementation was functionally correct but inefficient;
+- the implementation failed correctness, scale or resource constraints in a
+  way that yields a reusable algorithmic lesson.
+
+Each chapter must use professional, technically precise Italian and include,
+where applicable:
+
+1. problem model, assumptions and notation;
+2. the initial approach and the exact reason it is inadequate;
+3. the efficient algorithm and its invariant;
+4. a concise correctness argument;
+5. time and space complexity;
+6. edge cases and pattern-recognition cues;
+7. visually distinct code boxes for the inadequate and corrected
+   implementations.
+
+Preserve Giuseppe's submitted code in the red comparison box except for
+clearly marked omissions made only for presentation. Never overwrite the
+submission in the notebook. Use the green box for the reviewed reference
+implementation. Distinguish a logically incorrect program from one that is
+correct on outputs but non-compliant with scale constraints.
+
+After a meaningful handbook update, compile the PDF, render every page to
+images and inspect the result for clipping, overflow and readability. The
+canonical generated artifact is `output/pdf/dispensa_algoritmi.pdf`.
 
 ## Assessment strategy
 

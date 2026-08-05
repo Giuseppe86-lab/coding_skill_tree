@@ -1,0 +1,206 @@
+\chapter{Sliding window su eventi temporali}
+
+\begin{flushleft}
+\textbf{Origine:} Week 001, esercizio 4\\
+\textbf{Contesto:} analisi del picco di richieste in una finestra temporale\\
+\textbf{Esito della review:} output corretti, vincolo di scala non rispettato\\
+\textbf{Pattern:} sliding window a due indici
+\end{flushleft}
+
+\section{Modello del problema}
+
+Sia
+\[
+T = (t_0,t_1,\ldots,t_{n-1})
+\]
+una sequenza di timestamp ordinata in modo non decrescente e sia $w>0$ la
+durata della finestra. Si vuole determinare il massimo numero di eventi
+contenuti in un intervallo semiaperto di ampiezza $w$:
+\[
+M = \max_{s}\left|\{t_i \in T \mid s \leq t_i < s+w\}\right|.
+\]
+
+La scelta dell'intervallo semiaperto è sostanziale: un evento posto
+esattamente in $s+w$ non appartiene alla finestra che inizia in $s$.
+
+\begin{definitionbox}{Precondizioni operative}
+La soluzione lineare presuppone timestamp già ordinati. Se l'ordinamento non
+è garantito dal contratto, occorre prima ordinare la sequenza, portando il
+costo complessivo a $O(n\log n)$. La durata deve essere strettamente positiva;
+in caso contrario la funzione solleva \texttt{ValueError}.
+\end{definitionbox}
+
+\Needspace{14cm}
+\section{Approccio iniziale: enumerazione completa}
+
+L'implementazione presentata durante la quest seleziona ogni timestamp come
+possibile inizio e, per ciascuno, visita nuovamente l'intera sequenza. Questa
+strategia è concettualmente semplice e restituisce gli output attesi, ma
+esegue fino a $n^2$ verifiche di appartenenza.
+
+\begin{inefficientcode}{Implementazione iniziale - non conforme al vincolo di scala}
+def max_requests_in_window(timestamps, window_seconds):
+    """Restituisce il picco di richieste in una finestra temporale."""
+    count_max = 0
+    if window_seconds <= 0:
+        raise ValueError("La finestra dev'essere un valore positivo")
+
+    for start in timestamps:
+        count = 0
+        for input in timestamps:
+            if start <= input < start + window_seconds:
+                count += 1
+        count_max = max(count, count_max)
+
+    return count_max
+\end{inefficientcode}
+
+\subsection{Diagnosi tecnica}
+
+Il problema non risiede nella condizione di appartenenza, che rappresenta
+correttamente l'intervallo semiaperto. L'inefficienza nasce dalla perdita di
+informazione tra due finestre consecutive: quando l'estremo destro avanza,
+gli eventi ancora validi vengono contati nuovamente da zero.
+
+Inoltre, il nome locale \texttt{input} oscura la funzione built-in omonima di
+Python. Non altera il risultato in questo caso, ma riduce la chiarezza del
+codice e può generare errori in estensioni successive.
+
+Con un limite di $n=200\,000$, una crescita quadratica è incompatibile con un
+coding assessment ordinario:
+\[
+n^2 = 40\,000\,000\,000
+\]
+controlli potenziali. Il superamento dei test visibili certifica soltanto
+alcuni risultati, non il rispetto dei vincoli computazionali.
+
+\Needspace{15cm}
+\section{Algoritmo efficiente}
+
+Poiché i timestamp sono ordinati, gli eventi validi per un dato estremo
+destro formano sempre un segmento contiguo della sequenza. È quindi
+sufficiente mantenere due indici:
+
+\begin{itemize}
+  \item \texttt{right} introduce il nuovo evento corrente;
+  \item \texttt{left} avanza soltanto quando l'evento più vecchio non rientra
+        più nella finestra.
+\end{itemize}
+
+\begin{principlebox}{Invariante della finestra}
+Dopo il ciclo \texttt{while}, tutti e soli gli eventi con indice compreso tra
+\texttt{left} e \texttt{right} appartengono alla finestra semiaperta che
+termina sul timestamp corrente. In particolare,
+\[
+t_{\texttt{right}}-t_{\texttt{left}} < w.
+\]
+L'indice \texttt{left} è il più piccolo indice che rende vera questa
+disuguaglianza.
+\end{principlebox}
+
+\begin{efficientcode}{Implementazione di riferimento - complessità lineare}
+def max_requests_in_window(timestamps, window_seconds):
+    """Restituisce il picco di richieste in una finestra temporale."""
+    if window_seconds <= 0:
+        raise ValueError("La finestra dev'essere un valore positivo")
+
+    left = 0
+    best = 0
+
+    for right, current_time in enumerate(timestamps):
+        while current_time >= timestamps[left] + window_seconds:
+            left += 1
+
+        current_count = right - left + 1
+        best = max(best, current_count)
+
+    return best
+\end{efficientcode}
+
+\section{Argomento di correttezza}
+
+Si consideri un indice destro fissato. Prima dell'esecuzione del
+\texttt{while}, la finestra può contenere timestamp troppo vecchi. Ogni
+iterazione incrementa \texttt{left} finché il timestamp corrente non dista
+meno di $w$ dal timestamp più vecchio conservato. Per ordinamento, tutti gli
+elementi successivi a \texttt{left} soddisfano allora la stessa condizione.
+
+Alla terminazione del ciclo, \texttt{left} è minimo: se esistesse un indice
+valido più piccolo, il \texttt{while} si sarebbe fermato prima. Di
+conseguenza, \texttt{right-left+1} è il massimo numero di eventi in una
+finestra valida il cui evento più recente è $t_{\texttt{right}}$.
+Considerando in successione ogni possibile estremo destro e conservando il
+massimo, l'algoritmo restituisce $M$.
+
+\section{Analisi di complessità}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Strategia & Tempo & Spazio ausiliario \\
+\midrule
+Scansione annidata & $O(n^2)$ & $O(1)$ \\
+Sliding window & $O(n)$ & $O(1)$ \\
+Ordinamento + sliding window & $O(n\log n)$ & dipende dall'ordinamento \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Il ciclo \texttt{while} annidato non rende quadratica la seconda soluzione.
+L'indice \texttt{left} non arretra mai: nel corso dell'intera esecuzione può
+avanzare al massimo $n$ volte. Anche \texttt{right} percorre la sequenza una
+sola volta; il lavoro totale è quindi lineare.
+
+\section{Edge case rilevanti}
+
+\begin{itemize}
+  \item \textbf{Sequenza vuota:} il ciclo non viene eseguito e il risultato è
+        zero.
+  \item \textbf{Timestamp duplicati:} restano simultaneamente nella finestra
+        e vengono conteggiati come eventi distinti.
+  \item \textbf{Evento sul bordo destro:} se la distanza è esattamente $w$,
+        l'evento più vecchio viene escluso, coerentemente con $[s,s+w)$.
+  \item \textbf{Durata non positiva:} il problema non definisce una finestra
+        valida; la funzione segnala esplicitamente l'errore.
+  \item \textbf{Input non ordinato:} l'invariante non è garantito; occorre
+        ordinare oppure rifiutare l'input secondo il contratto.
+\end{itemize}
+
+\section{Come riconoscere il pattern}
+
+La sliding window è una candidata naturale quando il problema presenta
+contemporaneamente:
+
+\begin{itemize}
+  \item una sequenza ordinata o ordinabile;
+  \item un intervallo contiguo definito da una soglia;
+  \item una statistica da massimizzare o minimizzare su tutti gli intervalli;
+  \item finestre consecutive che condividono gran parte degli elementi.
+\end{itemize}
+
+\begin{principlebox}{Regola operativa per l'assessment}
+Quando due finestre consecutive differiscono per pochi elementi, chiedersi
+quale stato possa essere aggiornato incrementalmente. Se ogni elemento entra
+ed esce dalla struttura al massimo una volta, è spesso possibile ottenere
+una soluzione $O(n)$.
+\end{principlebox}
+
+\Needspace{9cm}
+\section{Checklist di ripasso}
+
+Prima di considerare concluso un problema analogo, verificare:
+
+\begin{enumerate}
+  \item se l'ordinamento è garantito oppure deve essere costruito;
+  \item se gli estremi dell'intervallo sono inclusivi o esclusivi;
+  \item quale invariante deve valere dopo l'avanzamento di \texttt{left};
+  \item quante volte ciascun indice può avanzare complessivamente;
+  \item se la complessità ottenuta è compatibile con la dimensione massima
+        dichiarata.
+\end{enumerate}
+
+\begin{definitionbox}{Stato di apprendimento}
+Il pattern è stato introdotto e analizzato, ma non è ancora masterizzato. La
+mastery richiederà implementazioni lineari autonome, corrette e completate nel
+timebox su più problemi con formulazioni differenti.
+\end{definitionbox}
