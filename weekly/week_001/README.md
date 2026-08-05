@@ -17,8 +17,8 @@ appesantire il flusso del notebook.
 - Se superi il timebox, annota il punto di blocco e passa oltre.
 - Non usare AI, soluzioni online o autocomplete generativo.
 - Non modificare gli assert per farli passare.
-- Prima di eseguire i test, prevedi il risultato di almeno un caso base e un
-  edge case.
+- Esegui i test visibili; gli edge case e i test di performance aggiuntivi
+  saranno preparati da Codex durante la review.
 - Punta prima a una soluzione semplice e corretta; valuta eventuali
   ottimizzazioni soltanto dopo.
 
@@ -43,6 +43,6 @@ La review del venerdi' valutera':
 - assenza di mutazioni non richieste;
 - pattern riconosciuto prima di scrivere codice;
 - rispetto del timebox;
-- qualita' dei test manuali aggiunti.
+- comportamento sui test aggiuntivi preparati durante la review.
 
 Un singolo esercizio corretto non assegna mastery a un pattern.

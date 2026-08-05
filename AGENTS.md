@@ -88,6 +88,10 @@ First identify:
 
 Provide the complete solution only when Giuseppe explicitly asks for it.
 
+During reviews, Codex is responsible for designing and running additional
+edge-case and performance tests. Do not require Giuseppe to invent personal
+tests unless he explicitly asks to train that skill.
+
 ## Progress tracking
 
 After each completed weekly quest, update:
@@ -111,7 +115,8 @@ Reinforce these rules:
 - secure easy points first;
 - timebox blocked problems;
 - prefer a correct simple solution before optimizing;
-- test edge cases explicitly;
+- run the visible tests; Codex will add edge-case and performance tests during
+  review;
 - do not spend excessive time because a solution feels “almost finished”.
 
 ## Repository hygiene

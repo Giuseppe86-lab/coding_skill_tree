@@ -13,7 +13,7 @@ Problem Solving
 ☑ Long→Wide
 ☑ Frequency Count
 
-⬜ Sliding Window
+⬜ Sliding Window — introdotta in Week 001; da implementare in O(n)
 ⬜ Two Pointer
 ⬜ Heap
 ⬜ BFS

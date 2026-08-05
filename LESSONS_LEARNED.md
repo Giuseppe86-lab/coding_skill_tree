@@ -113,3 +113,30 @@ string manipulation, sliding window, binary search, grafi e gestione del tempo.
 
 La prima strategia e': leggere bene il problema, riconoscere il pattern,
 usare timebox rigidi e salvare ogni errore come regola pratica.
+
+### 2026-08-04 - Week 001: test superati e vincoli di scala
+
+#### Situazione
+
+Quattro esercizi completati entro il timebox. String manipulation e frequency
+map sono state applicate correttamente; la prima sliding window ha prodotto gli
+output attesi con una scansione completa per ogni timestamp.
+
+#### Errore o blocco
+
+I test visibili dell'esercizio sulla finestra passavano, ma la soluzione era
+O(n^2) con un vincolo di 200.000 elementi.
+
+#### Regola imparata
+
+- Il passaggio dei test visibili non dimostra il rispetto dei vincoli.
+- Prima di chiudere, stimare la complessita' usando la dimensione massima.
+
+#### Pattern collegato
+
+Sliding window, aggregazione con dizionario, validazione degli input.
+
+#### Prossima azione
+
+Allenare una sliding window lineare su un problema diverso. Codex preparera'
+edge case e test di performance aggiuntivi durante le review.

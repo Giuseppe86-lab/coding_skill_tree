@@ -90,7 +90,7 @@ Una settimana standard contiene:
    `SKILL_TREE.md`, `LESSONS_LEARNED.md`, `mistakes/mistakes.md`.
 2. Creare o aprire la cartella della settimana in `weekly/week_XXX/`.
 3. Risolvere gli esercizi uno alla volta, rispettando il timebox.
-4. Scrivere note brevi su ragionamento, blocchi, edge case e intuizioni.
+4. Scrivere note brevi su ragionamento, blocchi e intuizioni.
 5. Fare review delle soluzioni.
 6. Aggiornare i file di progresso.
 
@@ -162,7 +162,8 @@ Regole operative:
 - se compaiono due tabelle o due liste collegate, pensare subito a un lookup;
 - se serve controllare esistenza in un dizionario, usare `key in dict`;
 - prima scrivere una soluzione corretta, poi ottimizzare;
-- testare manualmente almeno un caso base e un edge case.
+- eseguire i test visibili; Codex prepara edge case e test di performance
+  aggiuntivi durante la review.
 
 ## Regole di aggiornamento
 
