@@ -1,13 +1,123 @@
-\chapter{Sliding window su eventi temporali}
+\chapter{Predicati esatti e sliding window}
 
 \begin{flushleft}
-\textbf{Origine:} Week 001, esercizio 4\\
-\textbf{Contesto:} analisi del picco di richieste in una finestra temporale\\
-\textbf{Esito della review:} output corretti, vincolo di scala non rispettato\\
-\textbf{Pattern:} sliding window a due indici
+\textbf{Origine:} Week 001, esercizi 2 e 4\\
+\textbf{Contesto:} aggregazione di record e picco di richieste temporali\\
+\textbf{Esito della review:} un errore logico e un vincolo di scala non rispettato\\
+\textbf{Pattern:} predicati esatti; sliding window a due indici
 \end{flushleft}
 
-\section{Modello del problema}
+\section{Predicati esatti nell'aggregazione di record}
+
+\subsection{Modello, ipotesi e notazione}
+
+Sia $R=(r_0,\ldots,r_{n-1})$ una sequenza di record. Ogni record può
+contenere i campi \texttt{model}, \texttt{tokens} e \texttt{success}. Per
+ogni nome di modello valido occorre calcolare numero di run, numero di
+successi e somma dei token. La condizione sui successi è intenzionalmente
+stretta:
+\[
+\operatorname{successo}(r_i) \iff r_i[\texttt{success}]\ \texttt{is True}.
+\]
+Il contratto non afferma che il campo contenga esclusivamente booleani;
+pertanto non è lecito sostituire questa condizione con la truthiness.
+
+\subsection{Approccio iniziale ed errore logico}
+
+La submission costruisce correttamente un dizionario indicizzato per modello,
+gestisce token mancanti o nulli e non modifica gli input. La riga che calcola
+\texttt{successful\_run}, tuttavia, accetta ogni oggetto truthy. Ad esempio,
+\texttt{1} e \texttt{"yes"} aumentano il contatore pur non essendo l'oggetto
+booleano \texttt{True}. Si tratta di un errore di correttezza, non di una
+semplice inefficienza.
+
+Il codice seguente conserva integralmente la submission; sono omessi soltanto
+gli spazi finali invisibili, privi di effetto sull'esecuzione, per esigenze di
+presentazione tipografica.
+
+\begin{inefficientcode}{Submission originale - errore logico sul predicato}
+def summarize_model_runs(runs):
+    """Aggrega run, successi e token per modello."""
+    lookup = {}
+    for record_or in runs:
+        record=record_or.copy()
+        model=record.get('model')
+        tokens= 0 if record.get('tokens') is None else record.get('tokens')
+        successful_run=1 if record.get("success") else 0
+        if model is None:
+            continue
+        if model not in lookup:
+            lookup[model]={"total_runs": 1, "successful_runs": successful_run, "total_tokens": tokens}
+        else:
+            lookup[model]["total_runs"]+=1
+            lookup[model]["successful_runs"]+=successful_run
+            lookup[model]["total_tokens"]+=tokens
+
+    return lookup
+\end{inefficientcode}
+
+\subsection{Algoritmo corretto e invariante}
+
+La struttura di aggregazione resta appropriata. È sufficiente inizializzare
+le statistiche del modello, aggiornare esattamente una volta il numero di run
+e tradurre letteralmente il predicato con \texttt{is True}.
+
+\begin{principlebox}{Invariante dell'aggregazione}
+Dopo avere elaborato i primi $i$ record, per ogni modello $m$ presente nel
+dizionario le tre statistiche sono esattamente quelle dei record validi tra
+$r_0$ e $r_{i-1}$ con modello $m$; in particolare,
+\texttt{successful\_runs} conta soltanto i record il cui valore di
+\texttt{success} è l'oggetto \texttt{True}.
+\end{principlebox}
+
+\begin{efficientcode}{Implementazione di riferimento - predicato conforme}
+def summarize_model_runs(runs):
+    """Aggrega run, successi e token per modello."""
+    summary = {}
+    for record in runs:
+        model = record.get("model")
+        if model is None:
+            continue
+
+        if model not in summary:
+            summary[model] = {
+                "total_runs": 0,
+                "successful_runs": 0,
+                "total_tokens": 0,
+            }
+
+        stats = summary[model]
+        stats["total_runs"] += 1
+        stats["successful_runs"] += int(record.get("success") is True)
+        tokens = record.get("tokens")
+        stats["total_tokens"] += 0 if tokens is None else tokens
+
+    return summary
+\end{efficientcode}
+
+\subsection{Correttezza, complessità ed edge case}
+
+L'invariante vale inizialmente perché il dizionario è vuoto. Ogni record senza
+modello valido viene ignorato come richiesto. Per un record valido,
+l'algoritmo aggiorna una sola voce: incrementa il numero di run, aggiunge un
+successo se e solo se il predicato esatto è vero e somma zero oppure il numero
+di token. L'invariante è quindi preservato; dopo $n$ iterazioni descrive
+l'intero input e implica la correttezza del risultato.
+
+Il tempo è $O(n)$ in media, assumendo accessi hash $O(1)$, e lo spazio
+ausiliario è $O(k)$ per $k$ modelli distinti. I casi da verificare includono
+lista vuota, modello mancante o \texttt{None}, nome di modello vuoto, token
+mancanti, nulli o uguali a zero, e valori \texttt{success} quali
+\texttt{False}, \texttt{None}, \texttt{0}, \texttt{1} e stringhe non vuote.
+
+\begin{principlebox}{Segnale di riconoscimento}
+Espressioni come ``soltanto quando'', ``esattamente'', ``è \texttt{True}'' o
+``è \texttt{None}'' richiedono di distinguere identità, uguaglianza e
+truthiness. Prima di codificare, trascrivere il predicato della specifica in
+una condizione booleana senza allargarne il dominio.
+\end{principlebox}
+
+\section{Sliding window: modello del problema}
 
 Sia
 \[
@@ -31,7 +141,7 @@ in caso contrario la funzione solleva \texttt{ValueError}.
 \end{definitionbox}
 
 \Needspace{14cm}
-\section{Approccio iniziale: enumerazione completa}
+\section{Sliding window: approccio iniziale}
 
 L'implementazione presentata durante la quest seleziona ogni timestamp come
 possibile inizio e, per ciascuno, visita nuovamente l'intera sequenza. Questa
@@ -41,16 +151,15 @@ esegue fino a $n^2$ verifiche di appartenenza.
 \begin{inefficientcode}{Implementazione iniziale - non conforme al vincolo di scala}
 def max_requests_in_window(timestamps, window_seconds):
     """Restituisce il picco di richieste in una finestra temporale."""
-    count_max = 0
+    count_max=0
     if window_seconds <= 0:
         raise ValueError("La finestra dev'essere un valore positivo")
-
     for start in timestamps:
-        count = 0
+        count=0
         for input in timestamps:
-            if start <= input < start + window_seconds:
-                count += 1
-        count_max = max(count, count_max)
+            if start <= input < start+window_seconds:
+                count+=1
+        count_max=max(count, count_max)
 
     return count_max
 \end{inefficientcode}
@@ -74,8 +183,10 @@ n^2 = 40\,000\,000\,000
 controlli potenziali. Il superamento dei test visibili certifica soltanto
 alcuni risultati, non il rispetto dei vincoli computazionali.
 
-\Needspace{15cm}
-\section{Algoritmo efficiente}
+\clearpage
+\thispagestyle{fancy}
+\noindent\rule{0pt}{1cm}\par
+\section{Sliding window: algoritmo efficiente}
 
 Poiché i timestamp sono ordinati, gli eventi validi per un dato estremo
 destro formano sempre un segmento contiguo della sequenza. È quindi
@@ -117,7 +228,7 @@ def max_requests_in_window(timestamps, window_seconds):
     return best
 \end{efficientcode}
 
-\section{Argomento di correttezza}
+\section{Sliding window: argomento di correttezza}
 
 Si consideri un indice destro fissato. Prima dell'esecuzione del
 \texttt{while}, la finestra può contenere timestamp troppo vecchi. Ogni
@@ -132,7 +243,10 @@ finestra valida il cui evento più recente è $t_{\texttt{right}}$.
 Considerando in successione ogni possibile estremo destro e conservando il
 massimo, l'algoritmo restituisce $M$.
 
-\section{Analisi di complessità}
+\clearpage
+\thispagestyle{fancy}
+\noindent\rule{0pt}{2cm}\par
+\section{Sliding window: analisi di complessità}
 
 \begin{center}
 \begin{tabular}{@{}lll@{}}
@@ -151,7 +265,7 @@ L'indice \texttt{left} non arretra mai: nel corso dell'intera esecuzione può
 avanzare al massimo $n$ volte. Anche \texttt{right} percorre la sequenza una
 sola volta; il lavoro totale è quindi lineare.
 
-\section{Edge case rilevanti}
+\section{Sliding window: edge case rilevanti}
 
 \begin{itemize}
   \item \textbf{Sequenza vuota:} il ciclo non viene eseguito e il risultato è
@@ -166,7 +280,7 @@ sola volta; il lavoro totale è quindi lineare.
         ordinare oppure rifiutare l'input secondo il contratto.
 \end{itemize}
 
-\section{Come riconoscere il pattern}
+\section{Sliding window: come riconoscere il pattern}
 
 La sliding window è una candidata naturale quando il problema presenta
 contemporaneamente:
@@ -185,7 +299,9 @@ ed esce dalla struttura al massimo una volta, è spesso possibile ottenere
 una soluzione $O(n)$.
 \end{principlebox}
 
-\Needspace{9cm}
+\clearpage
+\thispagestyle{fancy}
+\noindent\rule{0pt}{2cm}\par
 \section{Checklist di ripasso}
 
 Prima di considerare concluso un problema analogo, verificare:

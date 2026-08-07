@@ -5,6 +5,7 @@ Python
 ☑ Set
 ☑ Tuple
 ⬜ Regex
+⬜ Predicati esatti (`is True` vs truthiness) — errore rilevato in Week 001
 
 Problem Solving
 

@@ -20,3 +20,9 @@ visibili sufficiente anche con O(n^2).
 
 ✓ Confrontare sempre la complessita'
 con il vincolo massimo dell'input.
+
+❌ Usata la truthiness quando la specifica
+richiedeva esattamente `success is True`.
+
+✓ Tradurre letteralmente i predicati e non
+assumere tipi non dichiarati dal contratto.

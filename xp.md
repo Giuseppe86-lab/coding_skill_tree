@@ -2,7 +2,7 @@ Level 1
 
 XP
 
-510
+485
 
 Baseline importata il 2026-08-02 dalle esercitazioni svolte prima dell'avvio
 del repository. Il totale viene mantenuto come punto di partenza e non viene
@@ -29,6 +29,8 @@ Streak
 
 Log XP
 
-- 2026-08-04 — Week 001: +25 esercizio 1 facile corretto entro il timebox;
-  +25 esercizio 2 facile-media corretto entro il timebox; +40 esercizio 3
-  medio corretto entro il timebox. Totale settimana: +90 XP.
+- 2026-08-07 — Week 001: +25 esercizio 1 facile corretto entro il timebox;
+  +40 esercizio 3 medio corretto entro il timebox. Nessun XP per l'esercizio
+  2, che non rispetta `success is True`, o per l'esercizio 4, che non rispetta
+  il vincolo di scala. Totale settimana: +65 XP. Il totale provvisorio di +90
+  e' stato rettificato dopo i test aggiuntivi.

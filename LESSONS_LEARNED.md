@@ -47,6 +47,14 @@ pratiche riutilizzabili nei coding assessment.
 - Ottimizzare solo dopo avere una versione funzionante e testata.
 - Scrivere piccoli test manuali prima di dichiarare chiuso un esercizio.
 
+### Semantica esatta dei predicati
+
+- Tradurre letteralmente i requisiti: `value is True` e un controllo di
+  truthiness non sono equivalenti.
+- Un valore come `1` o una stringa non vuota e' truthy, ma non e' l'oggetto
+  booleano `True`.
+- Non aggiungere al contratto ipotesi sui tipi che il testo non dichiara.
+
 ## Pattern acquisiti o in consolidamento
 
 ### Acquisiti
@@ -114,29 +122,36 @@ string manipulation, sliding window, binary search, grafi e gestione del tempo.
 La prima strategia e': leggere bene il problema, riconoscere il pattern,
 usare timebox rigidi e salvare ogni errore come regola pratica.
 
-### 2026-08-04 - Week 001: test superati e vincoli di scala
+### 2026-08-07 - Week 001: predicati esatti e vincoli di scala
 
 #### Situazione
 
 Quattro esercizi completati entro il timebox. String manipulation e frequency
 map sono state applicate correttamente; la prima sliding window ha prodotto gli
-output attesi con una scansione completa per ogni timestamp.
+output attesi con una scansione completa per ogni timestamp. La verifica
+aggiuntiva dell'aggregazione ha inoltre distinto `success is True` dalla
+truthiness generica.
 
 #### Errore o blocco
 
-I test visibili dell'esercizio sulla finestra passavano, ma la soluzione era
-O(n^2) con un vincolo di 200.000 elementi.
+I test visibili dell'esercizio sulla finestra passavano, ma la submission era
+O(n^2) con un vincolo di 200.000 elementi. Nell'aggregazione,
+`1 if record.get("success") else 0` contava anche valori truthy non booleani,
+in contrasto con la specifica.
 
 #### Regola imparata
 
 - Il passaggio dei test visibili non dimostra il rispetto dei vincoli.
 - Prima di chiudere, stimare la complessita' usando la dimensione massima.
+- Se il requisito dice `is True`, usare un predicato altrettanto esatto.
 
 #### Pattern collegato
 
-Sliding window, aggregazione con dizionario, validazione degli input.
+Sliding window, aggregazione con dizionario, validazione degli input e
+semantica dei predicati.
 
 #### Prossima azione
 
-Allenare una sliding window lineare su un problema diverso. Codex preparera'
-edge case e test di performance aggiuntivi durante le review.
+Allenare una sliding window lineare su un problema diverso e un esercizio con
+valori truthy eterogenei. Codex preparera' edge case e test di performance
+aggiuntivi durante le review.
