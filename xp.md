@@ -2,7 +2,7 @@ Level 1
 
 XP
 
-485
+510
 
 Baseline importata il 2026-08-02 dalle esercitazioni svolte prima dell'avvio
 del repository. Il totale viene mantenuto come punto di partenza e non viene
@@ -25,7 +25,7 @@ Boss Fight vinte
 
 Streak
 
-6 settimane
+7 settimane
 
 Log XP
 
@@ -34,3 +34,7 @@ Log XP
   2, che non rispetta `success is True`, o per l'esercizio 4, che non rispetta
   il vincolo di scala. Totale settimana: +65 XP. Il totale provvisorio di +90
   e' stato rettificato dopo i test aggiuntivi.
+
+- 2026-08-11 — Week 002: +25 esercizio 1 facile corretto entro il timebox.
+  Esercizio 2 corretto ma oltre il timebox; esercizi 3 e 4 corretti sugli
+  output ma non conformi ai vincoli di scala. Totale settimana: +25 XP.

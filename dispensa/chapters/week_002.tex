@@ -1,0 +1,308 @@
+\chapter[Stato incrementale]{Stato incrementale e lavoro\\riutilizzabile}
+
+\begin{flushleft}
+\textbf{Origine:} Week 002, esercizi 3 e 4\\
+\textbf{Contesto:} batch contigui entro un budget e registro dinamico di modelli\\
+\textbf{Esito della review:} output corretti, vincoli di scala non rispettati\\
+\textbf{Pattern:} sliding window con somma corrente; query online incrementali
+\end{flushleft}
+
+\section{Principio comune: conservare lo stato}
+
+I due problemi della settimana hanno formulazioni differenti, ma condividono
+la stessa struttura algoritmica. Una sequenza di operazioni consecutive
+modifica soltanto una piccola parte dello stato precedente:
+
+\begin{itemize}
+  \item nella finestra sul budget entra un costo dall'estremo destro e possono
+        uscire alcuni costi dall'estremo sinistro;
+  \item nel registro cambia la frequenza di un solo modello per operazione.
+\end{itemize}
+
+Ricalcolare ogni volta l'intera finestra o l'intero registro produce risultati
+corretti, ma perde l'informazione già disponibile. L'obiettivo dell'approccio
+incrementale è mantenere un riassunto sufficiente dello stato e aggiornarlo
+soltanto in corrispondenza della modifica corrente.
+
+\begin{principlebox}{Domanda diagnostica}
+Se due iterazioni consecutive condividono quasi tutti i dati, quale quantità
+può essere aggiornata aggiungendo ciò che entra e rimuovendo ciò che esce?
+Questa domanda separa spesso una soluzione quadratica da una lineare.
+\end{principlebox}
+
+\section{Sliding window con vincolo sulla somma}
+
+\subsection{Modello e precondizioni}
+
+Sia $C=(c_0,\ldots,c_{n-1})$ una sequenza di costi non negativi e sia
+$B\geq 0$ il budget. Si cerca la massima lunghezza di un segmento contiguo
+$C[l:r]$ tale che
+\[
+  \sum_{i=l}^{r} c_i \leq B.
+\]
+
+La non negatività è una precondizione essenziale. Se la somma supera il
+budget, estendere ulteriormente la finestra non può ridurla; per renderla di
+nuovo valida occorre avanzare l'estremo sinistro. Con valori negativi questa
+monotonia non sarebbe garantita e servirebbe un algoritmo diverso.
+
+\subsection{Submission originale e diagnosi}
+
+La submission seguente è funzionalmente corretta sugli input ammessi. La
+variabile \texttt{i} seleziona ogni possibile inizio e \texttt{j} estende il
+segmento finché il budget è rispettato. Il problema è che \texttt{j} e
+\texttt{tot\_budget} vengono reinizializzati per ogni nuovo \texttt{i}; i
+costi già sommati vengono quindi visitati molte volte.
+
+Il codice conserva integralmente la submission; nella sola stringa d'errore,
+\texttt{può} è reso come \texttt{puo'} per compatibilità tipografica con il
+motore dei riquadri. La modifica non ha alcun effetto sulla logica.
+
+\begin{inefficientcode}{Submission originale - output corretti, costo quadratico}
+def longest_batch_within_budget(costs, budget):
+    """Restituisce la massima lunghezza contigua entro il budget."""
+    len_series=0
+    if budget <0:
+        raise ValueError("Il budget non puo' essere negativo")
+
+    for i in range(len(costs)):
+        j=0
+        left=costs[i]
+        tot_budget=left
+        n_serie=0
+        while tot_budget<=budget:
+            n_serie+=1
+            j+=1
+            if i+j<len(costs):
+                tot_budget+=costs[i+j]
+            else:
+                break
+        len_series =max(len_series, n_serie)
+    return len_series
+\end{inefficientcode}
+
+Nel caso peggiore, ad esempio con tutti i costi uguali a zero, il numero di
+visite è
+\[
+  n+(n-1)+\cdots+1=\frac{n(n+1)}{2}=\Theta(n^2).
+\]
+L'espressione \texttt{i+j} calcola un indice in tempo costante, ma non riduce
+il numero complessivo di elementi riesaminati. Nei benchmark della review, il
+passaggio da 4.000 a 8.000 elementi ha moltiplicato il tempo per circa quattro,
+coerentemente con la crescita quadratica.
+
+\clearpage
+\thispagestyle{fancy}
+\noindent\rule{0pt}{1cm}\par
+\subsection{Algoritmo lineare e invariante}
+
+La finestra efficiente mantiene gli indici \texttt{left} e \texttt{right} e
+una somma corrente. Quando \texttt{right} avanza, il nuovo costo viene
+aggiunto. Se la somma supera il budget, si sottraggono in ordine i costi che
+escono da sinistra.
+
+\begin{principlebox}{Invariante della somma corrente}
+Al termine del ciclo \texttt{while}, vale
+\[
+\texttt{current\_sum}=\sum_{i=\texttt{left}}^{\texttt{right}}c_i\leq B,
+\]
+e \texttt{left} è il più piccolo indice che rende valida la finestra con
+estremo destro \texttt{right}.
+\end{principlebox}
+
+\begin{efficientcode}{Implementazione di riferimento - sliding window O(n)}
+def longest_batch_within_budget(costs, budget):
+    """Restituisce la massima lunghezza contigua entro il budget."""
+    if budget < 0:
+        raise ValueError("Il budget non puo' essere negativo")
+
+    left = 0
+    current_sum = 0
+    best = 0
+
+    for right, cost in enumerate(costs):
+        current_sum += cost
+
+        while current_sum > budget:
+            current_sum -= costs[left]
+            left += 1
+
+        best = max(best, right - left + 1)
+
+    return best
+\end{efficientcode}
+
+\subsection{Argomento di correttezza}
+
+Prima di elaborare un elemento la somma descrive esattamente la finestra
+precedente. L'aggiunta di $c_{\texttt{right}}$ estende tale finestra di un
+elemento. Se il budget è superato, ogni iterazione del \texttt{while} sottrae
+esattamente il costo escluso e avanza \texttt{left}; l'uguaglianza tra somma
+memorizzata e somma del segmento è quindi preservata.
+
+Quando il ciclo termina, la finestra è valida. Inoltre \texttt{left} è minimo:
+il costo precedente è stato rimosso soltanto mentre la somma superava $B$.
+La lunghezza \texttt{right-left+1} è pertanto la massima lunghezza valida con
+quell'estremo destro. Considerando tutti gli estremi destri e conservando il
+massimo si ottiene la soluzione globale.
+
+Ogni elemento entra una volta tramite \texttt{right} ed esce al massimo una
+volta tramite \texttt{left}. Il tempo è $O(n)$ e lo spazio ausiliario è
+$O(1)$.
+
+\section{Query online sul numero di modelli attivi}
+
+\subsection{Modello del registro}
+
+Sia $f(m)$ il numero corrente di deployment del modello $m$. Le operazioni
+possono incrementare o decrementare una frequenza, richiederne il valore o
+chiedere il numero di modelli distinti attivi:
+\[
+  A=\left|\{m\mid f(m)>0\}\right|.
+\]
+
+Una query è detta \emph{online} quando deve essere risolta nello stato prodotto
+da tutte le operazioni precedenti, senza conoscere o riorganizzare quelle
+successive.
+
+\subsection{Submission originale e costo delle query}
+
+La submission gestisce correttamente registrazioni, ritiri, conteggi e
+transizioni a zero. La query \texttt{distinct}, tuttavia, visita ogni chiave
+del dizionario per ricostruire $A$.
+
+\begin{inefficientcode}{Submission originale - distinct ricalcolato integralmente}
+def process_model_registry(initial_models, operations):
+    """Elabora aggiornamenti e query sul registro dei modelli."""
+    result=[]
+    registry_model={}
+    for model in initial_models:
+        if model not in registry_model:
+            registry_model[model]=0
+        registry_model[model]+=1
+
+    for command in operations:
+        if command[0]=="count":
+            model=command[1]
+            count=registry_model.get(model,0)
+            result.append(count)
+            continue
+        if command[0]=="distinct":
+            count=0
+            for model in registry_model:
+                if registry_model.get(model)!=0:
+                    count+=1
+            result.append(count)
+            continue
+        if command[0]=="retire":
+            model=command[1]
+            if model in registry_model and registry_model.get(model)>0:
+                registry_model[model]-=1
+            continue
+        if command[0]=="register":
+            model=command[1]
+            registry_model[model]=registry_model.get(model,0)+1
+            continue
+    return result
+\end{inefficientcode}
+
+Se il registro contiene $m$ chiavi e si eseguono $q$ query
+\texttt{distinct}, il costo può raggiungere $O(qm)$. Con $m$ e $q$ entrambi
+proporzionali alla dimensione dell'input, il comportamento è quadratico.
+
+\subsection{Aggregato incrementale e transizioni di soglia}
+
+Una singola operazione modifica la frequenza di un solo modello. Il valore $A$
+non cambia per ogni incremento o decremento, ma soltanto quando una frequenza
+attraversa la soglia zero:
+
+\begin{itemize}
+  \item $0\rightarrow1$: un modello diventa attivo, quindi $A$ aumenta;
+  \item $1\rightarrow0$: un modello cessa di essere attivo, quindi $A$
+        diminuisce;
+  \item $k\rightarrow k+1$ con $k>0$ e $k\rightarrow k-1$ con $k>1$: $A$
+        resta invariato.
+\end{itemize}
+
+\begin{principlebox}{Invariante del registro}
+Dopo ogni operazione, \texttt{active\_models} è uguale al numero di chiavi del
+dizionario la cui frequenza è strettamente positiva. La query
+\texttt{distinct} può quindi rispondere in $O(1)$.
+\end{principlebox}
+
+\begin{efficientcode}{Implementazione di riferimento - query tutte O(1) in media}
+def process_model_registry(initial_models, operations):
+    """Elabora aggiornamenti e query sul registro dei modelli."""
+    frequencies = {}
+    active_models = 0
+    results = []
+
+    for model in initial_models:
+        current = frequencies.get(model, 0)
+        if current == 0:
+            active_models += 1
+        frequencies[model] = current + 1
+
+    for operation in operations:
+        command = operation[0]
+
+        if command == "count":
+            results.append(frequencies.get(operation[1], 0))
+
+        elif command == "distinct":
+            results.append(active_models)
+
+        elif command == "register":
+            model = operation[1]
+            current = frequencies.get(model, 0)
+            if current == 0:
+                active_models += 1
+            frequencies[model] = current + 1
+
+        elif command == "retire":
+            model = operation[1]
+            current = frequencies.get(model, 0)
+            if current > 0:
+                frequencies[model] = current - 1
+                if current == 1:
+                    active_models -= 1
+
+    return results
+\end{efficientcode}
+
+\subsection{Correttezza e complessità}
+
+Durante l'inizializzazione, \texttt{active\_models} viene incrementato
+esattamente alla prima occorrenza di ogni modello, quindi l'invariante vale
+prima delle query. Un'operazione \texttt{count} o \texttt{distinct} non cambia
+lo stato. Una registrazione modifica $A$ soltanto se il conteggio precedente è
+zero; un ritiro valido lo modifica soltanto se il conteggio precedente è uno.
+In ogni caso l'invariante è preservato per induzione.
+
+Assumendo accessi hash $O(1)$ in media, inizializzazione e operazioni richiedono
+tempo $O(n+q)$, dove $n$ è il numero di deployment iniziali e $q$ il numero di
+operazioni. Lo spazio è $O(m+r)$: $m$ modelli distinti memorizzati e $r$
+risposte prodotte.
+
+\section{Segnali di riconoscimento ed edge case}
+
+\begin{itemize}
+  \item \textbf{Finestra contigua e valori non negativi:} una soglia sulla
+        somma suggerisce una finestra espandibile e restringibile.
+  \item \textbf{Query ripetute su un aggregato:} se ogni update tocca un solo
+        elemento, verificare se l'aggregato può essere aggiornato localmente.
+  \item \textbf{Soglie di stato:} conteggi di elementi attivi, non vuoti o
+        disponibili cambiano spesso soltanto attraversando zero.
+  \item \textbf{Sequenza vuota:} la finestra restituisce zero; il registro
+        parte con zero modelli attivi.
+  \item \textbf{Ritiro di un elemento assente:} non cambia frequenze né
+        aggregato.
+  \item \textbf{Costi uguali a zero:} possono restare tutti nella finestra e
+        devono contribuire alla lunghezza.
+\end{itemize}
+
+\begin{definitionbox}{Stato di apprendimento}
+I due invarianti sono stati analizzati e compresi durante la review, ma non
+sono ancora masterizzati. La mastery richiede implementazioni autonome,
+lineari e completate entro il timebox su formulazioni differenti.
+\end{definitionbox}

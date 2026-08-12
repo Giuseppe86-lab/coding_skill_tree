@@ -155,3 +155,35 @@ semantica dei predicati.
 Allenare una sliding window lineare su un problema diverso e un esercizio con
 valori truthy eterogenei. Codex preparera' edge case e test di performance
 aggiuntivi durante le review.
+
+### 2026-08-11 - Week 002: lo stato deve sopravvivere
+
+#### Situazione
+
+Quattro esercizi completati. Predicati esatti e aggregazione sono corretti;
+sliding window e registro dinamico producono gli output attesi ma ripetono
+lavoro gia' svolto.
+
+#### Errore o blocco
+
+Nella finestra sul budget, somma e indici vengono reinizializzati per ogni
+possibile inizio, mantenendo il costo O(n^2). Nel registro, ogni query
+`distinct` riconta tutte le chiavi e produce O(qm) nel caso peggiore.
+
+#### Regola imparata
+
+- Riconoscere un pattern significa anche conservarne lo stato tra iterazioni.
+- In una sliding window con valori non negativi, aggiornare la somma quando
+  `right` entra e sottrarre `costs[left]` quando `left` esce.
+- Per un conteggio di categorie attive, aggiornare il totale soltanto nelle
+  transizioni di frequenza `0 -> 1` e `1 -> 0`.
+
+#### Pattern collegato
+
+Sliding window con somma corrente, frequency map, query online e invarianti
+incrementali.
+
+#### Prossima azione
+
+Risolvere autonomamente problemi diversi che richiedano gli stessi invarianti,
+senza ripetere la formulazione della Week 002.

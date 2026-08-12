@@ -26,3 +26,15 @@ richiedeva esattamente `success is True`.
 
 ✓ Tradurre letteralmente i predicati e non
 assumere tipi non dichiarati dal contratto.
+
+❌ Riconosciuta la sliding window, ma
+reinizializzato lo stato per ogni inizio.
+
+✓ `right` aggiunge, `left` rimuove: somma
+e finestra devono persistere tra iterazioni.
+
+❌ Ricalcolato `distinct` scorrendo tutto
+il registro a ogni query.
+
+✓ Aggiornare l'aggregato solo nelle
+transizioni di stato `0 -> 1` e `1 -> 0`.
