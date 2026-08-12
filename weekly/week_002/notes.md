@@ -4,19 +4,21 @@ Compila questa pagina durante la quest.
 
 ## Strategia iniziale
 
-- Ordine scelto:
-- Motivo dell'ordine:
-- Esercizio piu' sicuro:
-- Esercizio piu' rischioso:
+- Ordine scelto: 1, 4, 3, 2
+- Motivo dell'ordine: parta da quelli su cui ho meno dubbi
+- Esercizio piu' sicuro: l'1
+- Esercizio piu' rischioso: il 2 perché non ho una strategia per gestire dominant error
 
 ## Registro
 
-| Esercizio | Pattern riconosciuto prima del codice | Tempo target | Tempo reale | Test visibili |
-|---|---|---:|---:|---|
-| 1 |  | 15 min |  |  |
-| 2 |  | 20 min |  |  |
-| 3 |  | 30 min |  |  |
-| 4 |  | 30 min |  |  |
+
+| Esercizio | Pattern riconosciuto prima del codice                       | Tempo target | Tempo reale | Test visibili |
+| --------- | ----------------------------------------------------------- | ------------ | ----------- | ------------- |
+| 1         | lookup e copia record per non modificare input              | 15 min       | 14 min      | Test superati |
+| 2         | Manipolazione dizionari. Dubbio come gestire dominant_error | 20 min       | 27 min      | Test superati |
+| 3         | Variante della sliding window                               | 30 min       | 16 min      | Test superati |
+| 4         | Tante condizioni da gestire e azioni da fare sugli array    | 30 min       | 17 min      | Test superati |
+
 
 ## Blocchi e decisioni
 
@@ -27,7 +29,7 @@ Compila questa pagina durante la quest.
 
 ### Esercizio 2
 
-- Primo blocco o errore:
+- Primo blocco o errore: ho gestito il dominant errore usando un dizionario di supporto, ma poi ho avuto qualche difficoltà nell'ultimo for a gestire le assegnazioni
 - Decisione presa:
 
 ### Esercizio 3
@@ -35,10 +37,14 @@ Compila questa pagina durante la quest.
 - Primo blocco o errore:
 - Decisione presa:
 
+
+
 ### Esercizio 4
 
 - Primo blocco o errore:
 - Decisione presa:
+
+
 
 ## Debrief
 
