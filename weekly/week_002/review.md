@@ -1,6 +1,6 @@
 # Week 002 — Review
 
-Stato: completata e verificata il 2026-08-11.
+Stato: completata il 2026-08-11; verifica indipendente rieseguita il 2026-08-16.
 
 ## Risultato complessivo
 
@@ -75,6 +75,13 @@ essere mantenuto incrementalmente invece di essere ricalcolato.
 - Esercizio 4: transizioni a zero, registrazioni successive e 1.000 sequenze
   casuali confrontate con un oracolo; output tutti corretti. Il benchmark
   evidenzia O(qm) nel caso peggiore.
+
+La verifica indipendente del 2026-08-16 ha ripetuto tutti i controlli sopra
+separando la submission dell'esercizio 3 dalla successiva cella marcata come
+soluzione AI. I 1.000 confronti casuali per gli esercizi 3 e 4 restano
+corretti; con 8.000 elementi i benchmark sono rispettivamente circa 2,44 s e
+2,52 s, confermando la crescita quadratica. La rivalutazione non modifica
+risultati, mastery o XP.
 
 ## Dati di processo
 
