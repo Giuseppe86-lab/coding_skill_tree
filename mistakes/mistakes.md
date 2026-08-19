@@ -38,3 +38,15 @@ il registro a ogni query.
 
 ✓ Aggiornare l'aggregato solo nelle
 transizioni di stato `0 -> 1` e `1 -> 0`.
+
+❌ Deduplicato con membership su una lista
+crescente, ottenendo tempo quadratico.
+
+✓ Lista per l'ordine, set per verificare
+in tempo medio costante gli elementi visti.
+
+❌ Aggiornato un aggregato a ogni operazione
+oltre la soglia, anche senza cambio di stato.
+
+✓ Confrontare stato prima e dopo: modificare
+l'aggregato solo se la soglia viene attraversata.

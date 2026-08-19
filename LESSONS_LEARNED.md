@@ -187,3 +187,37 @@ incrementali.
 
 Risolvere autonomamente problemi diversi che richiedano gli stessi invarianti,
 senza ripetere la formulazione della Week 002.
+
+### 2026-08-19 - Week 003: la soglia si attraversa, non si riconta
+
+#### Situazione
+
+La sliding window e' stata implementata autonomamente in O(n), correttamente e
+entro il timebox. Anche l'aggregazione annidata e' corretta e lineare, ma ha
+richiesto 45 minuti su 25. La normalizzazione delle stringhe produce gli output
+attesi ma deduplica tramite una lista; il monitor online mantiene un contatore
+aggregato con transizioni non esatte.
+
+#### Errore o blocco
+
+- Il controllo di appartenenza su una lista crescente rende quadratica la
+  deduplicazione di molti nomi distinti.
+- Il numero di worker sovraccarichi viene aggiornato a ogni operazione sopra o
+  sotto soglia, invece che soltanto quando il worker cambia stato.
+
+#### Regola imparata
+
+- Per deduplicare preservando l'ordine, usare una lista per l'output e un set
+  per la membership.
+- Per un aggregato basato su soglia, confrontare lo stato precedente con lo
+  stato successivo e aggiornarlo soltanto quando i due differiscono.
+
+#### Pattern collegato
+
+Sliding window con conteggio, deduplicazione stabile, aggregazione annidata e
+query online con transizioni di soglia.
+
+#### Prossima azione
+
+Ripetere una sliding window su una nuova formulazione e allenare transizioni
+che restano per piu' operazioni consecutive dallo stesso lato della soglia.

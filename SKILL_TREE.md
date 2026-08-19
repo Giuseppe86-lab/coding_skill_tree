@@ -5,7 +5,7 @@ Python
 ☑ Set
 ☑ Tuple
 ⬜ Regex
-⬜ Predicati esatti (`is True` vs truthiness) — corretti in Week 002; da ripetere
+⬜ Predicati esatti (`is True` vs truthiness) — corretti in Week 002-003; da completare entro timebox
 
 Problem Solving
 
@@ -14,8 +14,8 @@ Problem Solving
 ☑ Long→Wide
 ☑ Frequency Count
 
-⬜ Sliding Window — riconosciuta in Week 001-002; da implementare in O(n)
-⬜ Query online con stato incrementale — introdotte in Week 002
+⬜ Sliding Window — prima implementazione autonoma O(n) in Week 003; da ripetere
+⬜ Query online con stato incrementale — complessita' lineare in Week 003, transizioni errate
 ⬜ Two Pointer
 ⬜ Heap
 ⬜ BFS
